@@ -1,6 +1,6 @@
-const validate = require("../helpers/validate");
-const _data    = require("../helpers/data");
-const config   = require("../config");
+const validate = require("../../helpers/validate");
+const _data    = require("../../helpers/data");
+const config   = require("../../config");
 
 const CART_DB = config.CART_DB;
 

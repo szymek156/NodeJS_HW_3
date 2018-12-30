@@ -6,11 +6,26 @@ const url           = require("url");
 let server = {};
 
 server.router = {
-    users: handlers.users,
-    tokens: handlers.tokens,
-    menu: handlers.menu,
-    cart: handlers.carts,
-    checkout: handlers.checkout,
+    "api/users": handlers.api.users,
+    "api/tokens": handlers.api.tokens,
+    "api/menu": handlers.api.menu,
+    "api/cart": handlers.api.carts,
+    "api/checkout": handlers.api.checkout,
+
+    "": handlers.index,
+    "account/create": handlers.account.create,
+    "account/edit": handlers.account.edit,
+    "account/deleted": handlers.account.deleted,
+
+    "session/create": handlers.session.create,
+    "session/delete": handlers.session.delete,
+
+    "cart/create": handlers.cart.create,
+    "cart/edit": handlers.cart.edit,
+
+    "favicon.ico": handlers.favicon,
+    "public": handlers.public,
+
     echo: handlers.echo
 };
 
@@ -45,14 +60,28 @@ server.unifiedServer = function(req, res) {
 
         // Route requests
         let handler = path in server.router ? server.router[path] : handlers.notFound;
+
+        if (path.indexOf("public/") > -1) {
+            handler = handlers.public;
+        }
+
         // let result  = await handler(data);
 
         handler(data).then((result) => {
-            res.setHeader("Content-Type", "application/json");
-            res.writeHead(result.status);
-            res.end(JSON.stringify(result.payload));
+            let payload = "";
 
-            // console.log(`result dump ${JSON.stringify(result)}`);
+            if (result.contentType) {
+                res.setHeader("Content-Type", result.contentType);
+                if (result.payload) {
+                    payload = result.payload;
+                }
+            } else {
+                res.setHeader("Content-Type", "application/json");
+                payload = JSON.stringify(result.payload);
+            }
+
+            res.writeHead(result.status);
+            res.end(payload);
         });
     });
 };

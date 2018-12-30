@@ -1,4 +1,3 @@
-const _data  = require("./data");
 const config = require("../config");
 
 let TOKEN_DB = config.TOKEN_DB;
@@ -32,6 +31,10 @@ validate.parameter = function(parameter, type, possibleValues = [], instance = u
 // Verify if a given token id is
 // currently valid for a given user
 validate.token = async function(id, email) {
+    // This sucks really hard, import hidden inside a function to "avoid" cyclic reference:
+    // helpers -> validate -> data -> helpers
+
+    const _data = require("./data");
     // Lookup the token
     let token = await _data.read(TOKEN_DB, id);
 

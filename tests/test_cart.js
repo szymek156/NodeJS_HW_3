@@ -91,12 +91,12 @@ class TestCart extends TestBase {
 
         await Common.updateCart({email: this.user.email, cart: cart}, {id: this.token.id});
 
-        // Proceed to checkout
-        let {res: checkoutRes, payload: checkoutPayload} =
-            await Common.postCart({email: this.user.email}, {id: this.token.id});
+        // // Proceed to checkout
+        // let {res: checkoutRes, payload: checkoutPayload} =
+        //     await Common.postCart({email: this.user.email}, {id: this.token.id});
 
 
-        assert(checkoutRes.statusCode === 200);
+        // assert(checkoutRes.statusCode === 200);
     }
 }
 

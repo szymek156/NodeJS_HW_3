@@ -36,10 +36,9 @@ class Common {
             protocol: "http:",
             hostname: "localhost",
             method: "POST",
-            path: "/users",
+            path: "/api/users",
             port: config.port
         };
-
 
         return await Common.syncRequest(requestDetails, JSON.stringify(user));
     };
@@ -51,7 +50,7 @@ class Common {
             protocol: "http:",
             hostname: "localhost",
             method: "GET",
-            path: "/users",
+            path: "/api/users",
             port: config.port,
             headers: {
                 "Content-Type": "application/json",
@@ -70,7 +69,7 @@ class Common {
             protocol: "http:",
             hostname: "localhost",
             method: "DELETE",
-            path: "/users",
+            path: "/api/users",
             port: config.port,
             headers: {
                 "Content-Type": "application/json",
@@ -89,7 +88,7 @@ class Common {
             protocol: "http:",
             hostname: "localhost",
             method: "PUT",
-            path: "/users",
+            path: "/api/users",
             port: config.port,
             headers: {
                 "Content-Type": "application/json",
@@ -106,7 +105,7 @@ class Common {
             protocol: "http:",
             hostname: "localhost",
             method: "POST",
-            path: "/tokens",
+            path: "/api/tokens",
             port: config.port
         };
 
@@ -121,7 +120,7 @@ class Common {
             protocol: "http:",
             hostname: "localhost",
             method: "GET",
-            path: "/tokens",
+            path: "/api/tokens",
             port: config.port,
             headers:
                 {"Content-Type": "application/json", "Content-Length": Buffer.byteLength(getData)}
@@ -138,7 +137,7 @@ class Common {
             protocol: "http:",
             hostname: "localhost",
             method: "DELETE",
-            path: "/tokens",
+            path: "/api/tokens",
             port: config.port,
             headers:
                 {"Content-Type": "application/json", "Content-Length": Buffer.byteLength(getData)}
@@ -154,7 +153,7 @@ class Common {
             protocol: "http:",
             hostname: "localhost",
             method: "PUT",
-            path: "/tokens",
+            path: "/api/tokens",
             port: config.port,
             headers:
                 {"Content-Type": "application/json", "Content-Length": Buffer.byteLength(strToken)}
@@ -170,7 +169,7 @@ class Common {
             protocol: "http:",
             hostname: "localhost",
             method: "GET",
-            path: "/menu",
+            path: "/api/menu",
             port: config.port,
             headers: {
                 "Content-Type": "application/json",
@@ -189,7 +188,7 @@ class Common {
             protocol: "http:",
             hostname: "localhost",
             method: "POST",
-            path: "/cart",
+            path: "/api/cart",
             port: config.port,
             headers: {
                 "Content-Type": "application/json",
@@ -207,7 +206,7 @@ class Common {
             protocol: "http:",
             hostname: "localhost",
             method: "PUT",
-            path: "/cart",
+            path: "/api/cart",
             port: config.port,
             headers: {
                 "Content-Type": "application/json",
@@ -225,7 +224,7 @@ class Common {
             protocol: "http:",
             hostname: "localhost",
             method: "GET",
-            path: "/cart",
+            path: "/api/cart",
             port: config.port,
             headers: {
                 "Content-Type": "application/json",
@@ -243,7 +242,7 @@ class Common {
             protocol: "http:",
             hostname: "localhost",
             method: "DELETE",
-            path: "/cart",
+            path: "/api/cart",
             port: config.port,
             headers: {
                 "Content-Type": "application/json",
@@ -261,7 +260,7 @@ class Common {
             protocol: "http:",
             hostname: "localhost",
             method: "POST",
-            path: "/checkout",
+            path: "/api/checkout",
             port: config.port,
             headers: {
                 "Content-Type": "application/json",

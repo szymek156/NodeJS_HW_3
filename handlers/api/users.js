@@ -1,7 +1,7 @@
-const validate = require("../helpers/validate");
-const _data    = require("../helpers/data");
-const helpers  = require("../helpers/helpers");
-const config   = require("../config");
+const validate = require("../../helpers/validate");
+const _data    = require("../../helpers/data");
+const helpers  = require("../../helpers/helpers");
+const config   = require("../../config");
 
 const USER_DB = config.USER_DB;
 let users     = {};
