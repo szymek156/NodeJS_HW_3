@@ -1,0 +1,42 @@
+{
+        "salads": [
+            {
+                "name": "Caesar Selections", 
+                "description": 
+                "Crisp romaine lettuce tossed with our homemade Caesar dressing, croutons, and shredded parmesan cheese. With chicken",
+                "price": 8.95
+            },
+            
+            {
+                "name": "Spinach Salad", 
+                "description":  "Fresh spinach, mushrooms, and hard-boiled egg served with warm bacon vinaigrette",
+                "price": 7.95
+            },
+            {
+                "name": "Lobster Bisque", 
+                "description":  "lobster in a thick, creamy broth with a touch of sherry",
+                "price": 9.95
+            }],
+
+        "pizzas": [
+            {
+                "name": "Smokin Good Times", 
+                "description" : "Garlic Sauce, Canadian Bacon, Pepperoni, Pineapple, Real Bacon, Sausage drizzled with BBQ Sauce",
+                "price" : 10.00
+            },
+            {
+                "name": "Goodtimes Combo", 
+                "description" : "Salami, Pepperoni, Linguiça, Mushrooms, Sausage, Bell Peppers, Onion & Olives",
+                "price" : 13.00
+            },
+            {
+                "name": "Goodtimes Vegetarian", 
+                "description" : "Ranch, Garlic, Spinach, Olives, Onions, Mushrooms, Fresh Tomatoes",
+                "price" : 15.00
+            },
+            {
+                "name": "Chicken Combo", 
+                "description" : "Chicken, Ranch, Olives, Zucchini, Tomatoes, Mushrooms, Onions, Garlic (optional)",
+                "price" : 8.00
+            }]
+}

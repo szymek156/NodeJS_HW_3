@@ -1,0 +1,82 @@
+
+POST http://localhost:3000/echo
+
+### Create User
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "name" : "Simon",
+    "email" : "Simon@theclouds.com",
+    "address" : "5th Ave Str",
+    "password" : "strong password"
+}
+
+### Create Token
+POST http://localhost:3000/tokens
+Content-Type: application/json
+
+{
+    "email" : "Simon@theclouds.com",
+    "password" : "strong password"
+}
+
+### Update User
+PUT http://localhost:3000/users
+Content-Type: application/json
+token: 82ufxi3xn94lszhin65a
+
+{
+    "name" : "Hoey",
+    "email" : "Simon@theclouds.com",
+    "address" : "5th Ave Str",
+    "password" : "Even stronger password"
+}
+
+### Get Menu
+GET http://localhost:3000/menu
+Content-Type: application/json
+token: 82ufxi3xn94lszhin65a
+
+{
+    "email" : "Simon@theclouds.com"
+}
+
+### Create Cart
+POST  http://localhost:3000/cart
+Content-Type: application/json
+token: 82ufxi3xn94lszhin65a
+
+### Add some items to the cart
+PUT  http://localhost:3000/cart
+Content-Type: application/json
+token: 82ufxi3xn94lszhin65a
+
+{
+    "email" : "Simon@theclouds.com",
+    "cart": { 
+        "items":
+            [ { 
+                "name": "'Caesar Selections'",
+                "description":
+                    "'Crisp romaine lettuce tossed with our homemade Caesar dressing, croutons, and shredded parmesan cheese. With chicken'",
+                "price": 8.95 },
+                { 
+                    "name": "'Goodtimes Combo'",
+                "description":
+                    "'Salami, Pepperoni, Linguiça, Mushrooms, Sausage, Bell Peppers, Onion & Olives'",
+                "price": 13 
+                } 
+            ] 
+    }
+}
+
+
+### Proceed to checkout
+POST  http://localhost:3000/checkout
+Content-Type: application/json
+token: 82ufxi3xn94lszhin65a
+
+{
+    "email" : "Simon@theclouds.com"
+}
