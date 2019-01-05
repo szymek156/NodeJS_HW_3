@@ -9,7 +9,7 @@ let cart = {};
 // Returns current cart
 // Req param: email, tokenId === cartId
 cart.get = async function(bytes) {
-    let obj   = JSON.parse(bytes.payload);
+    let obj   = bytes.query;
     let email = validate.parameter(obj.email, "string");
     let token = validate.parameter(bytes.headers.token, "string");
 
@@ -27,8 +27,11 @@ cart.get = async function(bytes) {
         return {status: 200, payload: cart};
 
     } catch (err) {
-        return {status: 400, payload: err};
-    }
+        return {
+            // Return empty cart in case of any failure
+            status: 200, payload: {items: []}
+        }
+    };
 };
 
 // Creates new, empty cart, it's 1 to 1 mapping to tokenId
@@ -47,7 +50,14 @@ cart.post = async function(data) {
             return {status: 400, payload: "Invalid token"};
         }
 
-        let   record = {};
+        let record = {
+            items: [{
+                "name": "Caesar Selections",
+                "description":
+                    "Crisp romaine lettuce tossed with our homemade Caesar dressing, croutons, and shredded parmesan cheese. With chicken",
+                "price": 8.95
+            }]
+        };
         await _data.create(CART_DB, token, record);
 
         return {status: 200, payload: record};

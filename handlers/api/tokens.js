@@ -10,7 +10,7 @@ let tokens = {};
 
 // Req param: token id
 tokens.get = async function(data) {
-    let payload = JSON.parse(data.payload);
+    let payload = data.query;
 
     let record = {
         id: validate.parameter(payload.id, "string"),

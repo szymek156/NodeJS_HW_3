@@ -14,8 +14,8 @@ server.router = {
 
     "": handlers.index,
     "account/create": handlers.account.create,
-    "account/edit": handlers.account.edit,
-    "account/deleted": handlers.account.deleted,
+    // "account/edit": handlers.account.edit,
+    // "account/deleted": handlers.account.deleted,
 
     "session/create": handlers.session.create,
     "session/delete": handlers.session.delete,
@@ -23,6 +23,7 @@ server.router = {
     "cart/create": handlers.cart.create,
     "cart/edit": handlers.cart.edit,
 
+    "menu": handlers.api.menu,
     "favicon.ico": handlers.favicon,
     "public": handlers.public,
 
@@ -55,8 +56,8 @@ server.unifiedServer = function(req, res) {
             payload: buffer
         };
 
-        // console.log(`HTTP Request dump:
-        //     ${JSON.stringify(data)}`);
+        console.log(`HTTP Request dump:
+            ${JSON.stringify(data)}`);
 
         // Route requests
         let handler = path in server.router ? server.router[path] : handlers.notFound;

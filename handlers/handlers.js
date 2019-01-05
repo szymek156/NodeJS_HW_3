@@ -1,8 +1,15 @@
-const _users    = require("./api/users");
-const _tokens   = require("./api/tokens");
-const _menu     = require("./api/menu");
-const _carts    = require("./api/carts");
-const _checkout = require("./api/checkout");
+const _api_users    = require("./api/users");
+const _api_tokens   = require("./api/tokens");
+const _api_menu     = require("./api/menu");
+const _api_carts    = require("./api/carts");
+const _api_checkout = require("./api/checkout");
+
+const _account_create = require("./account/create");
+
+const _session_create = require("./session/create");
+
+const _carts_create = require("./cart/create");
+const _carts_edit   = require("./cart/edit");
 
 const helpers = require("../helpers/helpers");
 
@@ -12,54 +19,55 @@ handlers.account = {};
 handlers.session = {};
 handlers.cart    = {};
 
-handlers.api.users = async function(data) {
+handlers.handleRequest = async function(data, endpoint) {
     let method = data.method;
 
-    if (method in _users) {
-        return await _users[method](data);
+    if (method in endpoint) {
+        try {
+            return await endpoint[method](data);
+        } catch (err) {
+            console.log(`err is: ${err}`);
+            return await handlers.badRequest();
+        }
     } else {
         return await handlers.badRequest();
     }
+};
+
+handlers.api.users = async function(data) {
+    return await handlers.handleRequest(data, _api_users);
 };
 
 handlers.api.tokens = async function(data) {
-    let method = data.method;
-
-    if (method in _tokens) {
-        return await _tokens[method](data);
-    } else {
-        return await handlers.badRequest();
-    }
+    return await handlers.handleRequest(data, _api_tokens);
 };
 
 handlers.api.menu = async function(data) {
-    let method = data.method;
-
-    if (method in _menu) {
-        return await _menu[method](data);
-    } else {
-        return await handlers.badRequest();
-    }
+    return await handlers.handleRequest(data, _api_menu);
 };
 
 handlers.api.carts = async function(data) {
-    let method = data.method;
-
-    if (method in _carts) {
-        return await _carts[method](data);
-    } else {
-        return await handlers.badRequest();
-    }
+    return await handlers.handleRequest(data, _api_carts);
 };
 
 handlers.api.checkout = async function(data) {
-    let method = data.method;
+    return await handlers.handleRequest(data, _api_checkout);
+};
 
-    if (method in _checkout) {
-        return await _checkout[method](data);
-    } else {
-        return await handlers.badRequest();
-    }
+handlers.account.create = async function(data) {
+    return await handlers.handleRequest(data, _account_create);
+};
+
+handlers.session.create = async function(data) {
+    return await handlers.handleRequest(data, _session_create);
+};
+
+handlers.cart.create = async function(data) {
+    return await handlers.handleRequest(data, _carts_create);
+};
+
+handlers.cart.edit = async function(data) {
+    return await handlers.handleRequest(data, _carts_edit);
 };
 
 handlers.index = async function(data) {
