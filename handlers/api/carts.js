@@ -29,7 +29,7 @@ cart.get = async function(bytes) {
     } catch (err) {
         return {
             // Return empty cart in case of any failure
-            status: 200, payload: {items: []}
+            status: 400, payload: {items: []}
         }
     };
 };

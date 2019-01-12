@@ -20,7 +20,7 @@ server.router = {
     "session/create": handlers.session.create,
     "session/delete": handlers.session.delete,
 
-    "cart/create": handlers.cart.create,
+    "cart/show": handlers.cart.show,
     "cart/edit": handlers.cart.edit,
 
     "menu": handlers.api.menu,
@@ -80,6 +80,8 @@ server.unifiedServer = function(req, res) {
                 res.setHeader("Content-Type", "application/json");
                 payload = JSON.stringify(result.payload);
             }
+
+            console.log(`HTTP response: ${result.status}`);
 
             res.writeHead(result.status);
             res.end(payload);

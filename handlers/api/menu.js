@@ -8,7 +8,7 @@ let menu      = {};
 // Returns menu, only for logged users
 // Req param: email, tokenId
 menu.get = async function(bytes) {
-    let obj   = JSON.parse(bytes.payload);
+    let obj   = bytes.query;
     let email = validate.parameter(obj.email, "string");
     let token = validate.parameter(bytes.headers.token, "string");
 

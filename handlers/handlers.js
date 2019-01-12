@@ -8,8 +8,8 @@ const _account_create = require("./account/create");
 
 const _session_create = require("./session/create");
 
-const _carts_create = require("./cart/create");
-const _carts_edit   = require("./cart/edit");
+const _carts_show = require("./cart/show");
+const _carts_edit = require("./cart/edit");
 
 const helpers = require("../helpers/helpers");
 
@@ -62,8 +62,8 @@ handlers.session.create = async function(data) {
     return await handlers.handleRequest(data, _session_create);
 };
 
-handlers.cart.create = async function(data) {
-    return await handlers.handleRequest(data, _carts_create);
+handlers.cart.show = async function(data) {
+    return await handlers.handleRequest(data, _carts_show);
 };
 
 handlers.cart.edit = async function(data) {

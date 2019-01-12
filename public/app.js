@@ -255,14 +255,14 @@ app.formResponseProcessor = function(formId, requestPayload, responsePayload) {
                 } else {
                     // If successful, set the token and redirect the user
                     app.setSessionToken(newResponsePayload);
-                    window.location = "/cart/create";
+                    window.location = "/cart/show";
                 }
             });
     }
     // If login was successful, set the token in localstorage and redirect the user
     if (formId == "sessionCreate") {
         app.setSessionToken(responsePayload);
-        window.location = "/cart/create";
+        window.location = "/cart/show";
     }
 
     // If forms saved successfully and they have success messages, show them
@@ -279,12 +279,12 @@ app.formResponseProcessor = function(formId, requestPayload, responsePayload) {
 
     // If the user just created a new check successfully, redirect back to the dashboard
     if (formId == "checksCreate") {
-        window.location = "/cart/create";
+        window.location = "/cart/show";
     }
 
     // If the user just deleted a check, redirect them to the dashboard
     if (formId == "checksEdit2") {
-        window.location = "/cart/create";
+        window.location = "/cart/show";
     }
 };
 
@@ -388,6 +388,10 @@ app.loadDataOnPage = function() {
     if (primaryClass == "checksEdit") {
         app.loadChecksEditPage();
     }
+
+    if (primaryClass == "cartEdit") {
+        app.loadCartEditPage();
+    }
 };
 
 // Load the account edit page specifically
@@ -445,27 +449,68 @@ app.loadCartCreatePage = function() {
                                         responsePayload.items.length > 0 ?
                                     responsePayload.items :
                                     [];
-                    if (meals.length > 0) {
-                        var table = document.getElementById("mealsListTable");
 
+                    var table = document.getElementById("mealsListTable");
+
+                    // while (table.rows.length > 1) {
+                    //     if (table.rows[1].id === "noChecksMessage") {
+                    //         break;
+                    //     }
+                    //     table.deleteRow(table.rows.length - 1);
+                    // }
+
+                    if (meals.length > 0) {
                         meals.forEach(function(meal) {
                             console.log(`DEBUG: meal ${meal}`);
 
-                            var tr = table.insertRow(-1);
+                            let tr = table.insertRow(-1);
                             tr.classList.add("checkRow");
-                            var meal_td  = tr.insertCell(0);
-                            var desc_td  = tr.insertCell(1);
-                            var price_td = tr.insertCell(2);
+                            var meal_td   = tr.insertCell(0);
+                            var desc_td   = tr.insertCell(1);
+                            var price_td  = tr.insertCell(2);
+                            var remove_td = tr.insertCell(3);
 
                             meal_td.innerHTML  = meal.name;
                             desc_td.innerHTML  = meal.description;
                             price_td.innerHTML = meal.price;
-                        });
 
+                            remove_td.innerHTML = `<button type=" button ">Remove</button>`;
+
+                            remove_td.addEventListener("click", function(event) {
+                                console.log(`DEBUG: clicked ${JSON.stringify(meal)}`);
+                                app.removeFromCart(meal, function(count) {
+                                    let idx = 0;
+
+                                    for (idx = 0; idx < table.rows.length; idx++) {
+                                        if (table.rows[idx].cells[0].innerHTML === meal.name) {
+                                            break;
+                                        }
+                                    }
+
+                                    console.log("DEBUG idx to removal is ", idx);
+
+                                    table.deleteRow(idx);
+
+                                    // Show add meal
+                                    document.getElementById("createCheckCTA").style.display =
+                                        "block";
+
+                                    if (count === 0) {
+                                        // Show 'you have no checks' message
+                                        document.getElementById("noChecksMessage").style.display =
+                                            "table-row";
+
+                                        // Show the createCheck CTA
+                                        document.getElementById("createCheckCTA").style.display =
+                                            "block";
+                                    }
+                                });
+                                // app.loadCartCreatePage();
+                            });
+                        });
 
                         // Show add meal
                         document.getElementById("createCheckCTA").style.display = "block";
-
 
                     } else {
                         // Show 'you have no checks' message
@@ -475,9 +520,15 @@ app.loadCartCreatePage = function() {
                         document.getElementById("createCheckCTA").style.display = "block";
                     }
                 } else {
-                    // If the request comes back as something other than 200, log the user our (on
-                    // the assumption that the api is temporarily down or the users token is bad)
-                    app.logUserOut();
+                    var payload = {
+                        "email": email,
+                    };
+
+                    app.client.request(undefined, "api/cart", "POST", undefined, payload,
+                                       function(statusCode, responsePayload) {
+                                           console.log("DEBUG: creating cart finished ",
+                                                       statusCode);
+                                       });
                 }
             });
     } else {
@@ -488,59 +539,164 @@ app.loadCartCreatePage = function() {
 
 // Load the dashboard page specifically
 app.loadCartEditPage = function() {
-    // Get the email from the current token, or log the user out if none is there
+    var currentToken =
+        typeof (app.config.sessionToken) == "object" ? app.config.sessionToken : false;
+
+    if (currentToken) {
+        var queryStringObject = {email: currentToken.email};
+        app.client.request(
+            undefined, "api/menu", "GET", queryStringObject, undefined,
+            function(statusCode, responsePayload) {
+                console.log("DEBUG: get menu: ", statusCode);
+
+                if (statusCode == 200) {
+                    var menu = typeof (responsePayload) == "object" ? responsePayload : {};
+
+
+                    var table = document.getElementById("menuListTablePizza");
+
+                    menu.pizzas.forEach(function(meal) {
+                        var tr = table.insertRow(-1);
+                        tr.classList.add("checkRow");
+                        var meal_td  = tr.insertCell(0);
+                        var desc_td  = tr.insertCell(1);
+                        var price_td = tr.insertCell(2);
+                        var cart_td  = tr.insertCell(3);
+
+                        meal_td.innerHTML  = meal.name;
+                        desc_td.innerHTML  = meal.description;
+                        price_td.innerHTML = meal.price;
+                        cart_td.innerHTML  = `<button type=" button ">Eat Me!</button>`;
+
+                        cart_td.addEventListener("click", function(event) {
+                            console.log(`DEBUG: clicked ${JSON.stringify(meal)}`);
+                            app.addToCart(meal);
+                        });
+                    });
+
+                    var table = document.getElementById("menuListTableSalads");
+
+                    menu.salads.forEach(function(meal) {
+                        var tr = table.insertRow(-1);
+                        tr.classList.add("checkRow");
+                        var meal_td  = tr.insertCell(0);
+                        var desc_td  = tr.insertCell(1);
+                        var price_td = tr.insertCell(2);
+                        var cart_td  = tr.insertCell(3);
+
+                        meal_td.innerHTML  = meal.name;
+                        desc_td.innerHTML  = meal.description;
+                        price_td.innerHTML = meal.price;
+                        cart_td.innerHTML  = `<button type=" button ">Eat Me!</button>`;
+
+                        cart_td.addEventListener("click", function(event) {
+                            console.log(`DEBUG: clicked ${JSON.stringify(meal)}`);
+                            app.addToCart(meal);
+                        });
+                    });
+
+
+                    // Show add meal
+                    document.getElementById("createCheckCTA").style.display = "block";
+                }
+            });
+
+    } else {
+        app.logUserOut();
+    }
+};
+
+app.getCart = function(callback) {
     var email =
         typeof (app.config.sessionToken.email) == "string" ? app.config.sessionToken.email : false;
     if (email) {
         // Fetch the user data
         var query = {"email": email};
-        app.client.request(
-            undefined, "api/cart", "GET", query, undefined, function(statusCode, responsePayload) {
-                if (statusCode == 200) {
-                    // Determine how many meals the user has
-                    var meals = typeof (responsePayload.items) == "object" &&
-                                        responsePayload.items instanceof Array &&
-                                        responsePayload.items.length > 0 ?
-                                    responsePayload.items :
-                                    [];
-                    if (meals.length > 0) {
-                        var table = document.getElementById("mealsListTable");
-
-                        meals.forEach(function(meal) {
-                            console.log(`DEBUG: meal ${meal}`);
-
-                            var tr = table.insertRow(-1);
-                            tr.classList.add("checkRow");
-                            var meal_td  = tr.insertCell(0);
-                            var desc_td  = tr.insertCell(1);
-                            var price_td = tr.insertCell(2);
-
-                            meal_td.innerHTML  = meal.name;
-                            desc_td.innerHTML  = meal.description;
-                            price_td.innerHTML = meal.price;
-                        });
-
-
-                        // Show add meal
-                        document.getElementById("createCheckCTA").style.display = "block";
-
-
-                    } else {
-                        // Show 'you have no checks' message
-                        document.getElementById("noChecksMessage").style.display = "table-row";
-
-                        // Show the createCheck CTA
-                        document.getElementById("createCheckCTA").style.display = "block";
-                    }
-                } else {
-                    // If the request comes back as something other than 200, log the user our (on
-                    // the assumption that the api is temporarily down or the users token is bad)
-                    app.logUserOut();
-                }
-            });
-    } else {
-        app.logUserOut();
+        app.client.request(undefined, "api/cart", "GET", query, undefined,
+                           function(statusCode, responsePayload) {
+                               if (statusCode == 200) {
+                                   callback(responsePayload);
+                               }
+                           });
     }
+};
+
+app.addToCart = function(meal) {
+    app.getCart(function(cart) {
+        cart.items.push(meal);
+
+        var currentToken =
+            typeof (app.config.sessionToken) == "object" ? app.config.sessionToken : false;
+
+        if (currentToken) {
+            // Update the token with a new expiration
+            var payload = {
+                "email": currentToken.email,
+                "cart": cart,
+            };
+
+            app.client.request(undefined, "api/cart", "PUT", undefined, payload,
+                               function(statusCode, responsePayload) {
+                                   console.log("DEBUG: add to card finished with status ",
+                                               statusCode);
+                                   if (statusCode == 200) {
+                                   } else {
+                                       app.setSessionToken(false);
+                                       callback(true);
+                                   }
+                               });
+        } else {
+            app.setSessionToken(false);
+        }
+    });
+};
+
+app.removeFromCart = async function(meal, callback) {
+    app.getCart(function(cart) {
+        let idx = cart.items.findIndex(function(element) {
+            return (element.name === meal.name);
+        });
+
+        cart.items.splice(idx, 1);
+
+        var currentToken =
+            typeof (app.config.sessionToken) == "object" ? app.config.sessionToken : false;
+
+        if (currentToken) {
+            // Update the token with a new expiration
+            var payload = {
+                "email": currentToken.email,
+                "cart": cart,
+            };
+
+            app.client.request(undefined, "api/cart", "PUT", undefined, payload,
+                               function(statusCode, responsePayload) {
+                                   console.log("DEBUG: add to card finished with status ",
+                                               statusCode);
+                                   if (statusCode == 200) {
+                                       callback(cart.items.length);
+                                       // var table = document.getElementById("mealsListTable");
+                                       // if (table.rows.length > 1) {
+                                       //     table.deleteRow(idx + 1);
+                                       // }
+
+
+                                       // if (table.rows.length == 0) {
+                                       //     document.getElementById("noChecksMessage").style.display
+                                       //     = "table-row";
+
+                                       //     // Show the createCheck CTA
+                                       //     document.getElementById("createCheckCTA").style.display
+                                       //     = "block";
+                                       // }
+                                   } else {
+                                       app.setSessionToken(false);
+                                   }
+                               });
+        } else {
+            app.setSessionToken(false);
+        }
+    });
 };
 
 
@@ -587,11 +743,11 @@ app.loadChecksEditPage = function() {
                 } else {
                     // If the request comes back as something other than 200, redirect back to
                     // dashboard
-                    window.location = "/cart/create";
+                    window.location = "/cart/show";
                 }
             });
     } else {
-        window.location = "/cart/create";
+        window.location = "/cart/show";
     }
 };
 
